@@ -50,6 +50,21 @@
                          (const warning)
                          (const info))))
 
+(defface flycheck-signal-light-error
+  '((t . (:inherit flycheck-error-list-error)))
+  "Face for error count."
+  :group 'flycheck-signal-light)
+
+(defface flycheck-signal-light-warning
+  '((t . (:inherit flycheck-error-list-warning)))
+  "Face for warning count."
+  :group 'flycheck-signal-light)
+
+(defface flycheck-signal-light-info
+  '((t . (:inherit flycheck-error-list-info)))
+  "Face for info count."
+  :group 'flycheck-signal-light)
+
 ;;;###autoload
 (defun flycheck-signal-light-mode-line ()
   "Get a text describing `flycheck-last-status-change' for use in the mode line."
@@ -64,7 +79,10 @@
 (defun flycheck-signal-light--error-count (level)
   (propertize
    (int-to-string (alist-get level (flycheck-count-errors flycheck-current-errors) 0))
-   'face (intern-soft (format "flycheck-error-list-%s" level))
+   'face (pcase level
+           (`error 'flycheck-signal-light-error)
+           (`warning 'flycheck-signal-light-warning)
+           (`info 'flycheck-signal-light-info))
    'help-echo (format "number of flycheck %ss" level)))
 
 (defvar flycheck-signal-light--original-mode-line nil)
